@@ -8,9 +8,16 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
   background-image: url(./Assets/Login_Background.png);
-
+  background-repeat: no-repeat;
+  background-size: cover;
 }
-
+* {
+  margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	list-style: none;
+	text-decoration: none;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

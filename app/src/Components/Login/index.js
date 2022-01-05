@@ -10,18 +10,18 @@ import swal from 'sweetalert2'
 
 
 export default function Login() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');    
+    const [uc_login, setUsername] = useState('');
+    const [uc_password, setPassword] = useState('');    
     const history = useHistory();
 
     async function handleSubmit() {
         const response = await api.post('/usuarios/login', {
-            username,
-            password
+            uc_login,
+            uc_password
         });
         if(response.status === 200){
             localStorage.setItem('token', response.data.token);
-            history.push('/dashboard/dashboard');
+            history.push('/home/dashboard');
         }else if (response.status === 401){
            swal.fire({
                 title: 'Erro',
@@ -33,10 +33,10 @@ export default function Login() {
     }
 
     const validationLogin = yup.object().shape({
-        username: yup
+        uc_login: yup
         .string()
         .required("Campo obrigatório."),
-        password: yup
+        uc_password: yup
         .string()
         .min(8, "A Senha deve ter no mínimo 8 caractéres")
         .required("Campo obrigatório."),
@@ -58,7 +58,7 @@ export default function Login() {
                             className="input-field"
                             placeholder="Usuário"
                             onChange={e => setUsername(e.target.value)}
-                            value={username}
+                            value={uc_login}
                             />
                             
                         <ErrorMessage
@@ -70,7 +70,7 @@ export default function Login() {
                             type="password"
                             className="input-field"
                             placeholder="Senha"
-                            value={password}
+                            value={uc_password}
                             onChange={e => setPassword(e.target.value)}/>
                         <ErrorMessage
                             component="span"

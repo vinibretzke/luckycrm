@@ -26,7 +26,7 @@ app.use(function(req, res, next) {
 
 app.use('/imagens', rotaImagens);
 app.use('/usuarios', rotaUsuarios);
-app.use('/dashboard', rotaInitialDashboard);
+app.use('/home', rotaInitialDashboard);
 
 app.use((req, res, next)=> {
     const erro = new Error('Ops, infelizmente ocorreu algum problema ao acessar essa rota');

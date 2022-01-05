@@ -5,17 +5,21 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 
 import Login from './Components/Login'
 import Home from './Components/Home'
+import Dashboard1 from './Components/Dashboards/'
 
 
-export default function App () {
+function App () {
   return(
     <Router>
       <Switch>
           <Route exact path="/">
             <Login />
           </Route>
-          <Route path="/home">
+          <Route exact path="/home">
             <Home />
+          </Route>
+          <Route exact path="/home/dashboard">
+            <Dashboard1 />
           </Route>
         </Switch>
     </Router>    
