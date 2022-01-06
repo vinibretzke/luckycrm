@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import 'chart.js/auto';
 import { Chart } from 'react-chartjs-2';
 import swal from "sweetalert2";
-
+import Navbar from '../../Utils/Sidebar'
 const data = {
   labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
   datasets: [
@@ -47,7 +47,8 @@ export default function LineChart() {
     }
   return (
     
-    <S.Container>      
+    <S.Container>  
+      <Navbar/>
         <S.ChartContainer> 
             <Chart type="bar" data={data} />   
             <Chart type="line" data={data} />   
