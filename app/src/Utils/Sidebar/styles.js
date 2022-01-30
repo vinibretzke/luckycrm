@@ -1,7 +1,130 @@
-import styled from "styled-components";
+import styled from 'styled-components';
+
 
 export const Container = styled.div`
-    position: fixed;
-    left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  position: fixed;
+  top: 0;
+`
+
+export const Header = styled.div`
+    height: 60px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background: rgba(255,92,0, 0.43);
+
+  .right_logout {
+    width: 150px;
+    height: 60px;
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;  
+    right: 0;
+
+    i {
+      font-size: 30px;
+    }
+    
+    i:hover{
+      cursor: pointer;
+    }
+
+    span {
+      font-size: 18px;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    span:hover {
+      cursor: pointer;
+    }
+  }
+
+    img{
+      width: 100px;
+      margin-left: 20px;
+    } 
+
+    img:hover{
+      cursor: pointer;
+    }
+
+    h1 {
+    color: #fff;
+    font-size: 22px;
+    font-family: 'Gugi', cursive;
+    }
+
+`
+
+
+export const LeftSide = styled.div`
+  height: 100%;
+  width: 270px;
+  background: #3485FF;
+
+  
+  .nav-links {
     height: 100%;
+    padding-top: 30px;
+    
+    li {
+      position: relative;
+      list-style: none;
+      background: #3176DD;
+      margin: 5px;
+      border-radius: 2px;
+    
+    i {
+      font-size: 22px;
+      height: 50px;
+      min-width: 78px;
+      text-align: center;
+      line-height: 50px;
+      color: #fff;
+    }
+
+    a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+    a .link_name {
+      color: #fff;
+      font-weight: 400;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .icon-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sub-menu {
+      padding: 6px 6px 14px 80px;
+      margin-top: -1px;
+      background: #3176DD;
+      display: none;
+      transition: all 0.4s ease;
+    
+      a {
+        color: #fff;
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        padding: 3px 0;
+      }
+    }
+
+    .icon-link:hover .sub-menu {
+      display: block;
+    }
+
+  }
 `

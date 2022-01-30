@@ -58,5 +58,7 @@ exports.dashboard1 = `select coalesce(sum(vd_grupo1), 0) vd_grupo1,
                        count(clcp_val_total) cupons
                   from cliente c, cliente_cupom cc
                  where c.cli_cod = cc.cli_cod
-                   and clcp_data_compra between '2020-10-01' and '2020-10-30'
+                   and clcp_data_compra between ? and ?
                  group by year(FROM_DAYS(TO_DAYS(NOW()) - TO_DAYS(cli_dat_nasc)))) a) a`
+
+

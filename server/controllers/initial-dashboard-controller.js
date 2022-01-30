@@ -3,14 +3,14 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dashboard = require('../SQL/dashboard1')
 
+
 exports.Dashboard1 = async (req, res, next) => {
 
     try {
         let query = dashboard.dashboard1;
 
-        const results = await mysql.execute(query);
+        const results = await mysql.execute(query, [req.body.dataInicial, req.body.dataFinal]);
        
-
         const response = {
             message: 'Consulta Executada',
             consulta: {
@@ -28,9 +28,13 @@ exports.Dashboard1 = async (req, res, next) => {
                 CuponsTotal: results[0].cp_total
             }
         }
+
+        console.log(response);
         return res.status(201).send(response);
 
     } catch (error) {
         return res.status(500).send({ error: error });
     }
 };
+
+

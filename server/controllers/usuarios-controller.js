@@ -79,7 +79,7 @@ exports.Login = async (req, res, next) => {
                 },
                 process.env.JWT_KEY,
                 {
-                    expiresIn: "1h"
+                    expiresIn: '1h' 
                 });
                 return res.status(200).send({
                     message: 'Autenticado com sucesso',

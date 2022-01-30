@@ -4,22 +4,21 @@ import './index.css';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 
 import Login from './Components/Login'
-import Home from './Components/Home'
-import Dashboard1 from './Components/Dashboards/'
+import Dashboard1 from './Components/Home/'
+import Sidebar from './Utils/Sidebar';
 
 
 function App () {
   return(
     <Router>
+      
       <Switch>
           <Route exact path="/">
             <Login />
           </Route>
-          <Route exact path="/home">
-            <Home />
-          </Route>
           <Route exact path="/home/dashboard">
-            <Dashboard1 />
+            <Sidebar />
+          <Dashboard1 />
           </Route>
         </Switch>
     </Router>    

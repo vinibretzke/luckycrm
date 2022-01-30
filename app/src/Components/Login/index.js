@@ -8,30 +8,43 @@ import api from '../../api/api'
 import swal from 'sweetalert2'
 
 
-
 export default function Login() {
     const [uc_login, setUsername] = useState('');
     const [uc_password, setPassword] = useState('');    
-    const history = useHistory();
-
-    async function handleSubmit() {
-        const response = await api.post('/usuarios/login', {
-            uc_login,
-            uc_password
-        });
-        if(response.status === 200){
-            localStorage.setItem('token', response.data.token);
-            history.push('/home/dashboard');
-        }else if (response.status === 401){
-           swal.fire({
-                title: 'Erro',
-                text: 'Usuário ou senha inválidos',
-                icon: 'error',
-                confirmButtonText: 'Ok'
-            })
-        }
+    const history = useHistory();    
+    
+    window.onload = function() {
+        if (localStorage.getItem('token') !== null) {
+            history.push('/home/dashboard');}
     }
 
+    async function handleSubmit() {
+        if (uc_login === '' || uc_password === '') {
+            swal.fire({
+                title: 'Erro',
+                text: 'Preencha todos os campos',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            })}else{
+                api.post('/usuarios/login', {
+                            uc_login,
+                            uc_password
+                        }).then(response => {
+                            localStorage.setItem('token', response.data.token);
+                            localStorage.setItem('user', response.data.uc_login);
+                          
+                            history.push('/home/dashboard');
+                        }).catch(error => {
+                            swal.fire({
+                                title: 'Oops...',
+                                text: 'Login ou senha incorretos!',
+                                icon: 'error',
+                                confirmButtonText: 'Ok'
+                            })
+                        });
+                    }
+            }               
+ 
     const validationLogin = yup.object().shape({
         uc_login: yup
         .string()
@@ -84,7 +97,6 @@ export default function Login() {
                             Criar Conta
                         </button>
                         </S.ContainerButtons>
-                        <a href='/'>Esqueci minha senha.</a>
                         
                     </S.Login>
                 </Form>

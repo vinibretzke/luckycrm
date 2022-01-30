@@ -1,20 +1,58 @@
 import styled from 'styled-components'
 
 export const Container = styled.div ` 
-    width: 100%;
-    height: 100vh;
-    background-color: transparent;
+    height: calc(100vh - 60px);
+    bottom: 0;
+    width: calc(100% - 270px);
+    position: absolute;
+    right: 0;
+    margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+`
+
+export const DateTimePickerContainer = styled.div `
+    width: 100%;
+    height: 60px;
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    .react-datetime-picker {
+        padding: 10px 10px;
+    }
+
+    i {
+        font-size: 30px;
+    }
+
+    i:hover{
+        cursor: pointer;
+    }
 `
 export const ChartContainer = styled.div ` 
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    width: 400px;
-    height: 450px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 50px;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+
+
+    div {
+        width: 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+ }
 
  img {
      margin-bottom: 30px;
@@ -33,6 +71,8 @@ export const ChartContainer = styled.div `
  a {
      margin-top: 15px;
  }
+
+ 
  
 `
 
