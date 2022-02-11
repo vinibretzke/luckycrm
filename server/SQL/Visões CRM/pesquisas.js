@@ -40,3 +40,46 @@ GROUP BY label
 order by str_to_Date(concat(label, '/01'), '%Y/%m/%d') 
 limit 12
 `
+
+exports.pesquisaGenero = `SELECT label,
+coalesce(SUM(qtd_f),0) qtd_f, 
+coalesce(SUM(qtd_m),0) qtd_m, 
+coalesce(SUM(qtd_o),0) qtd_o,
+'225,225,225' rgb  
+FROM (SELECT label,
+        (CASE
+          WHEN cli_flg_sexo = 'F' THEN
+           qtd
+        END) qtd_F,
+        (CASE
+          WHEN cli_flg_sexo = 'M' THEN
+           qtd
+        END) qtd_M,
+        (CASE
+          WHEN cli_flg_sexo <> 'M' AND cli_flg_sexo <> 'F' THEN
+           qtd
+        END) qtd_o
+   FROM (SELECT DATE_FORMAT(pecl_data, '%Y/%m') label,
+                c.cli_flg_sexo,
+                COUNT(DISTINCT CONCAT(pc.pesq_cod, c.cli_cod)) qtd
+           FROM pesquisa_cliente pc, cliente c
+          WHERE pc.cli_cod = c.cli_cod
+           /* and pecl_data >= date_add(DATE_ADD(LAST_DAY(:DATA_INICIAL), interval 1 DAY), interval - 13 Month)*/
+            and pc.pesq_cod = ? 
+          GROUP BY DATE_FORMAT(pecl_data, '%Y/%m'), c.cli_flg_sexo) a) a
+GROUP BY label
+order by str_to_Date(concat(label,'/01'),'%Y/%m/%d')
+limit 12
+`
+
+exports.pesquisaTotal = `SELECT label, SUM(qtd) value, '225,225,225' rgb
+FROM (SELECT DATE_FORMAT(pecl_data, '%Y/%m') label, 
+             pesq_cod pesquisa, 
+             COUNT(DISTINCT cli_cod) qtd
+        FROM pesquisa_cliente
+       where pecl_data >=
+             date_add(DATE_ADD(LAST_DAY(current_date), interval 1 DAY), interval - 13 Month)
+         and pesq_cod = ? 
+       GROUP BY DATE_FORMAT(pecl_data, '%Y/%m'), pesq_cod) a
+group by label
+`

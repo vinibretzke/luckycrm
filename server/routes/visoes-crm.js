@@ -14,5 +14,7 @@ router.get('/genero-semana', visoesCrmController.generoDiaSemana);
 router.get('/genero-participacao', visoesCrmController.partipacaoGenero);
 router.get('/genero-times', visoesCrmController.generoTimes);
 router.post('/pesquisa-idade', visoesCrmController.pesquisaIdade);
+router.post('/pesquisa-genero', visoesCrmController.pesquisaGenero);
+router.post('/pesquisa-total', visoesCrmController.pesquisaTotal);
 
 module.exports = router;

@@ -19,10 +19,29 @@ export default function VisoesPesquisa() {
   const [grupo3, setGrupo3] = useState([]);
   const [grupo4, setGrupo4] = useState([]);
   const [grupo5, setGrupo5] = useState([]);
+  const [pesHomem, setPesHomem] = useState([]);
+  const [pesMulher, setPesMulher] = useState([]);
+  const [pesTotal, setPesTotal] = useState([]);
 
 
 
 
+
+
+  useEffect(() => {
+    callFunctions();
+  }, []);
+
+  async function callFunctions() {
+    loadSelectOptions();
+    handleSelected();
+  }
+
+  async function filter(){
+    loadPesquisaIdade();
+    loadPesquisaGenero();
+    loadPesquisaTotal ();
+  }
   function handleSelected() {
     let selectBox = document.getElementById("selectBox");
     setPesq_Codigo(selectBox.options[selectBox.selectedIndex].value);
@@ -46,8 +65,7 @@ export default function VisoesPesquisa() {
     })
   }
 
-  async function loadPesquisa() {
-    alert(pesq_codigo);
+  async function loadPesquisaIdade() {
     api.post('/visoes-crm/pesquisa-idade', {
         pesq_codigo
     }).then(response => {
@@ -59,6 +77,13 @@ export default function VisoesPesquisa() {
       setGrupo5(response.data.consulta.map(item => item.grupo5));
 
       console.log(response.data);
+      if (response.data.consulta.length === 0) {
+        swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'Não há dados para essa pesquisa!',
+        })
+      }
     }).catch(error => {
         swal.fire({
           type: 'error',
@@ -68,6 +93,57 @@ export default function VisoesPesquisa() {
     })
   }
 
+
+  async function loadPesquisaGenero() {
+    api.post('/visoes-crm/pesquisa-genero', {
+        pesq_codigo
+    }).then(response => {
+      setMesIdade(response.data.consulta.map(item => item.mes));
+      setPesHomem(response.data.consulta.map(item => item.qtd_homens));
+      setPesMulher(response.data.consulta.map(item => item.qtd_mulheres));
+
+      console.log(response.data);
+      if (response.data.consulta.length === 0) {
+        swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'Não há dados para essa pesquisa!',
+        })
+      }
+    }).catch(error => {
+        swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'Algo deu errado ao carregar o gráfico de idade, tente novamente mais tarde!',
+        })
+    })
+  }
+
+
+  
+  async function loadPesquisaTotal() {
+    api.post('/visoes-crm/pesquisa-total', {
+        pesq_codigo
+    }).then(response => {
+      setMesIdade(response.data.consulta.map(item => item.mes));
+      setPesTotal(response.data.consulta.map(item => item.qtd_total));
+
+      console.log(response.data);
+      if (response.data.consulta.length === 0) {
+        swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'Não há dados para essa pesquisa!',
+        })
+      }
+    }).catch(error => {
+        swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'Algo deu errado ao carregar o gráfico de idade, tente novamente mais tarde!',
+        })
+    })
+  }
 
   const dataPartIdade = {
     labels: mesIdade,
@@ -147,30 +223,115 @@ const optionsIdade = {
         },
         title: {
             display: true,
-            text: 'Participação por Idade',
+            text: 'Respostas por Idade',
         },
         
     },
-    scales: {
-        y: {
-            ticks: {
-                callback: function (value, index, ticks) {
-                    return value * 100;
-                }
-            }
-        }
-    }
-
-
 
 };
+
+const dataGenero = {
+  labels: mesIdade ,
+  datasets: [
+      {
+          label: 'Homens',
+          data: pesHomem,
+          backgroundColor: [
+              'rgba(54, 162, 235, 0.2)',
+          ],
+          borderColor: [
+              'rgba(54, 162, 235, 1)',
+          ],
+          borderWidth: 1,
+          
+          tension: 0.5,
+      },
+      {
+          label: 'Mulheres',
+          data: pesMulher,
+          backgroundColor: [
+              'rgba(244, 67, 54, 0.2)',
+          ],
+          borderColor: [
+              'rgba(244, 67, 54, 1)',
+          ],
+          borderWidth: 1,
+          tension: 0.5,
+      },
+  ],
+};
+
+
+
+const optionsGenero = {
+  indexAxis: 'x',
+  elements: {
+      bar: {
+          borderWidth: 2,
+      },
+  },
+  responsive: true,
+  plugins: {
+      legend: {
+          position: 'top',
+      },
+      title: {
+          display: true,
+          text: 'Respostas por Gênero',
+      },
+  },
+
+} 
+
+const dataTotal = {
+  labels: mesIdade ,
+  datasets: [
+      {
+          label: 'Total',
+          data: pesTotal,
+          backgroundColor: [
+              'rgba(54, 255, 235, 0.2)',
+          ],
+          borderColor: [
+              'rgba(54, 255, 235, 1)',
+          ],
+          borderWidth: 1,
+      tension: 0.5,
+      },
+  ],
+};
+
+
+
+const optionsTotal = {
+  indexAxis: 'x',
+  elements: {
+      bar: {
+          borderWidth: 1,
+      },
+  },
+  responsive: true,
+  plugins: {
+      legend: {
+          display: false
+      },
+      title: {
+          display: true,
+          text: 'Respostas Totais',
+      },
+  },
+
+} 
+
+
 
   return (
     <S.Container>
       <Navbar />
       <S.Title>Análise de Pesquisa</S.Title>
       <S.ContainerSelect>
-        <select id="selectBox" onChange={handleSelected} onClick={loadSelectOptions}>
+        <select id="selectBox" onChange={handleSelected} onClick={loadSelectOptions} >
+          <option value="">Selecione uma pesquisa</option>
           {pesquisaCod.map((item, index) => {
             return (
               <option value={item}>{pesquisaNome[index]}</option>
@@ -178,15 +339,23 @@ const optionsIdade = {
           })}
 
         </select>
-        <button onClick={loadPesquisa} >Filtrar</button>
+        <button className="button-pesquisar" onClick={filter} >Buscar</button>
       </S.ContainerSelect>
       <S.ChartContainer>
                 <div className="chart3">
                     <Chart type="bar" data={dataPartIdade} options={optionsIdade} />
                 </div>
+                <div className="chart3">
+                    <Chart type="bar" data={dataGenero} options={optionsGenero} />
+                </div>
+                <div className="chart3">
+                    <Chart type="line" data={dataTotal} options={optionsTotal} />
+                </div>
 
         </S.ChartContainer>
-
+        <S.RespostasContainer>
+          Teste
+        </S.RespostasContainer>
     </S.Container>
   )
 }

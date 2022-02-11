@@ -278,3 +278,47 @@ exports.pesquisaIdade = async (req, res, next) => {
         return res.status(500).send({ error: error });
     }
 };
+
+exports.pesquisaGenero = async (req, res, next) => {
+    try {
+        let query = pesquisas.pesquisaGenero;
+        const results = await mysql.execute(query, [req.body.pesq_codigo]);
+
+        const response = {
+            message: 'Consulta Executada',
+            consulta: results.map(pesq => {
+                return {
+                    mes: pesq.label,
+                    qtd_mulheres: pesq.qtd_f,
+                    qtd_homens: pesq.qtd_m,
+                    qtd_outros: pesq.qtd_o,
+                }
+            })
+        }
+
+        return res.status(201).send(response);
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
+};
+
+exports.pesquisaTotal = async (req, res, next) => {
+    try {
+        let query = pesquisas.pesquisaTotal;
+        const results = await mysql.execute(query, [req.body.pesq_codigo]);
+
+        const response = {
+            message: 'Consulta Executada',
+            consulta: results.map(pesq => {
+                return {
+                    mes: pesq.label,
+                    qtd_total: pesq.value,
+                }
+            })
+        }
+
+        return res.status(201).send(response);
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
+};
