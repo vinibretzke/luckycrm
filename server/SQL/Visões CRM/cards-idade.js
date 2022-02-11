@@ -1,4 +1,4 @@
-exports.cardsPromo = `select coalesce(sum(vd_grupo1), 0) vd_grupo1,
+exports.cardsIdade = `select coalesce(sum(vd_grupo1), 0) vd_grupo1,
 coalesce(sum(vd_grupo2), 0) vd_grupo2,
 coalesce(sum(vd_grupo3), 0) vd_grupo3,
 coalesce(sum(vd_grupo4), 0) vd_grupo4,

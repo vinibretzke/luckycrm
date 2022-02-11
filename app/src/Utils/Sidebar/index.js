@@ -1,7 +1,8 @@
 import React from "react";
 import perfil from '../../Assets/perfil.png';
 import * as S from "./styles";
-import Logo from '../../Assets/Logo.png';
+import Logo from '../../Assets/Logo2.png';
+import { Link } from "react-router-dom";
 
 export default function Sidebar() {
     function logOut() {
@@ -9,89 +10,82 @@ export default function Sidebar() {
         window.location.href = "/";
     }
 
-    function Home(){
+    function Home() {
         window.location.href = "/home/dashboard";
     }
 
+
+
+    
     return (
-        <S.Container>     
+        <S.Container>
             <S.Header>
                 <img onClick={Home} src={Logo} alt="Logo do Sistema"></img>
 
-                <div className="right_logout">                    
+                <div className="right_logout">
                     <i onClick={logOut} class='bx bx-log-out'></i>
                     <span onClick={logOut} className="log-out">Sair</span>
                 </div>
-            </S.Header>       
+            </S.Header>
             <S.LeftSide className="close">
                 <ul class="nav-links">
                     <li>
-                        <a href="/home/dashboard">
+                        <Link to="/home/dashboard">
                             <i class="bx bx-grid-alt"></i>
                             <span class="link_name" >Visão Geral</span>
-                        </a>
+                        </Link>
                     </li>
                     <li>
                         <div class="icon-link">
-                            <a href='#'> 
+                            <a href='#'>
                                 <i class='bx bx-collection'></i>
                                 <span class="link_name" >Cadastros</span>
                             </a>
                             <i class='bx bxs-chevron-down'></i>
                         </div>
                         <ul class="sub-menu">
-                            <li><a href="#">Empresas</a></li>
-                            <li><a href="#">Filiais</a></li>
-                            <li><a href="#">Setores</a></li>
-                            <li><a href="#">Vinhos</a></li>
-                            <li><a href="#">Produtos</a></li>
-                            <li><a href="#">Motivos de Sugestão</a></li>
-                            <li><a href="#">Troféus</a></li>
+                            <li><Link to='/cadastros/empresas'>Empresas</Link></li>
+                            <li><Link to='/cadastros/filiais'>Filiais</Link></li>
+                            <li><Link to='/cadastros/setores'>Setores</Link></li>
+                            <li><Link to='/cadastros/vinhos'>Vinhos</Link></li>
+                            <li><Link to='/cadastros/sugestoes'>Motivos de Sugestão</Link></li>
+                            <li><Link to='/cadastros/pesquisas'>Pesquisas</Link></li>
                         </ul>
                     </li>
                     <li>
                         <div class="icon-link">
-                            <a href="/home/visoes-crm">
-                            <i class='bx bxs-pie-chart-alt-2'></i>
-                            <span class="link_name" >Visões CRM</span>
+                            <a href="#">
+                                <i class='bx bxs-pie-chart-alt-2'></i>
+                                <span class="link_name" >Visões CRM</span>
                             </a>
                             <i class='bx bxs-chevron-down'></i>
                         </div>
                         <ul class="sub-menu">
-                            <li><a href="#">Gráficos</a></li>
+                            <li><Link to='/visoes/venda-por-idade'>Idade</Link></li>
+                            <li><Link to='/visoes/venda-por-genero'>Gênero</Link></li>
+                            <li><Link to='/visoes/analise-pesquisa'>Pesquisas</Link></li>
+                            <li><Link to='/visoes/analise-sugestoes'>Sugestões</Link></li>
                         </ul>
                     </li>
                     <li>
                         <div class="icon-link">
-                            <a href="/home/relatorios-crm">
-                            <i class='bx bxs-report' ></i>
-                            <span class="link_name" >Relatórios</span>
+                            <a href="#">
+                                <i class='bx bxs-cog'></i>
+                                <span class="link_name" >Configurações</span>
                             </a>
                             <i class='bx bxs-chevron-down'></i>
                         </div>
                         <ul class="sub-menu">
-                            <li><a href="#">Relatorios</a></li>
+                            <li><Link to='/configuracoes/mudar-senha'>Mudar Minha Senha</Link></li>
+                            <li><Link to='/configuracoes/criar-usuarios'>Usuários</Link></li>
+                            <li><Link to='/configuracoes/parametros-sistema'>Parâmetros do Sistema</Link></li>
                         </ul>
-                    </li>
-                    <li>
-                        <div class="icon-link">
-                            <a href="/home/configuracoes">
-                            <i class='bx bxs-cog'></i>
-                            <span class="link_name" >Configurações</span>
-                            </a>
-                            <i class='bx bxs-chevron-down'></i>
-                        </div>
-                        <ul class="sub-menu">
-                            <li><a href="#">Mudar Minha Senha</a></li>
-                            <li><a href="#">Usuários</a></li>
-                            <li><a href="#">Parâmetros do Sistema</a></li>
-                        </ul>
-                        
+
                     </li>
                 </ul>
-                
+
             </S.LeftSide>
-            
+
         </S.Container>
 
     )

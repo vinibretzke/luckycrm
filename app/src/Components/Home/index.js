@@ -8,12 +8,12 @@ import Navbar from '../../Utils/Sidebar'
 import api from "../../api/api";
 import { useEffect, useState } from "react";
 import DateTimePicker from "react-datetime-picker";
-import moment from "moment";
+import { Grid } from 'gridjs-react';
+import "gridjs/dist/theme/mermaid.min.css";
 
 export default function LineChart() {
-  const [result, setResult] = useState([]);
-  const [dataInicial, setDataInicial] = useState(moment().subtract(1, 'days'));
-  const [dataFinal, setDataFinal] = useState(moment());
+  const [dataInicial, setDataInicial] = useState('');
+  const [dataFinal, setDataFinal] = useState('');
   const history = useHistory();
   const token = localStorage.getItem('token');
   const [novosClientes, setNovosClientes] = useState([]);
@@ -24,76 +24,44 @@ export default function LineChart() {
   const [gastoMedio, setGastoMedio] = useState([]);
   const [vendaTotal, setVendaTotal] = useState([]);
   const [clientesPerdidos, setClientesPerdidos] = useState([]);
-  const [unidade, setUnidade] = useState([]);  
-  const [unidade1, setUnidade1] = useState([]);
-  const [unidade2, setUnidade2] = useState([]);
-  const [unidade3, setUnidade3] = useState([]);
-  const [unidade4, setUnidade4] = useState([]);
-  const [unidade5, setUnidade5] = useState([]);
-  const [unidade6, setUnidade6] = useState([]);
-  const [unidade7, setUnidade7] = useState([]);
-  const [unidade8, setUnidade8] = useState([]);
-  const [unidade9, setUnidade9] = useState([]);
+  const [unidade, setUnidade] = useState([]);
   const [promo, setPromo] = useState([]);
-  const [promo1, setPromo1] = useState([]);
-  const [promo2, setPromo2] = useState([]);
-  const [promo3, setPromo3] = useState([]);
-  const [promo4, setPromo4] = useState([]);
-  const [promo5, setPromo5] = useState([]);
-  const [promo6, setPromo6] = useState([]);
-  const [promo7, setPromo7] = useState([]);
-  const [promo8, setPromo8] = useState([]);
-  const [promo9, setPromo9] = useState([]);  
-  const [foraPromo, setForaPromo] = useState([]);
-  const [foraPromo1, setForaPromo1] = useState([]);
-  const [foraPromo2, setForaPromo2] = useState([]);
-  const [foraPromo3, setForaPromo3] = useState([]);
-  const [foraPromo4, setForaPromo4] = useState([]);
-  const [foraPromo5, setForaPromo5] = useState([]);
-  const [foraPromo6, setForaPromo6] = useState([]);
-  const [foraPromo7, setForaPromo7] = useState([]);
-  const [foraPromo8, setForaPromo8] = useState([]);
-  const [foraPromo9, setForaPromo9] = useState([]);
+  const [vendaUnidade, setVendaUnidade] = useState([]);
+  const [vendaUnidaPromo, setVendaUnidaPromo] = useState([]);
   const [dia, setDia] = useState([]);
-  const [dia1, setDia1] = useState([]);
-  const [dia2, setDia2] = useState([]);
-  const [dia3, setDia3] = useState([]);
-  const [dia4, setDia4] = useState([]);
-  const [dia5, setDia5] = useState([]);
-  const [dia6, setDia6] = useState([]);
+  const [vendaDiaPromo, setVendaDiaPromo] = useState([]);
+  const [vendaDiaSemana, setVendaDiaSemana] = useState([]);
   const [promoDia, setPromoDia] = useState([]);
-  const [promoDia1, setPromoDia1] = useState([]);
-  const [promoDia2, setPromoDia2] = useState([]);
-  const [promoDia3, setPromoDia3] = useState([]);
-  const [promoDia4, setPromoDia4] = useState([]);
-  const [promoDia5, setPromoDia5] = useState([]);
-  const [promoDia6, setPromoDia6] = useState([]);
-  const [foraPromoDia, setForaPromoDia] = useState([]);
-  const [foraPromoDia1, setForaPromoDia1] = useState([]);
-  const [foraPromoDia2, setForaPromoDia2] = useState([]);
-  const [foraPromoDia3, setForaPromoDia3] = useState([]);
-  const [foraPromoDia4, setForaPromoDia4] = useState([]);
-  const [foraPromoDia5, setForaPromoDia5] = useState([]);
-  const [foraPromoDia6, setForaPromoDia6] = useState([]);
+  const [dataPart, setDataPart] = useState([]);
+  const [vendaMes, setVendaMes] = useState([]);
+  const [vendaMesPromo, setVendaMesPromo] = useState([]);  
+  const [promoMesPart, setPromoMesPart] = useState([]);
 
 
 
 
-  let venda = vendaPromo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  let vendaPart = (vendaPromo / vendaTotal).toLocaleString('pt-BR', { style: 'percent', currency: 'BRL', minimumFractionDigits: 2 });
+  let vendaPromoFormatado = vendaPromo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  // let vendaTotalFormat = vendaTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  // let vendaPart = venda / vendaTotalFormat;
   let ticketMedio = ticketMedioPromo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   let medio = gastoMedio.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  let total = vendaTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   let mediaCuponsCliente = Math.round(qtdCupons / clientesAtivos);
-  
-window.onload = function () {
-  callFunctions();
-}
 
-function callFunctions(){
-  getCardsPromo();
-  participacaoUnidade();
-  getDiaSemana();
-}
+
+
+  useEffect(() => {
+    callFunctions();
+  }, []);
+
+  function callFunctions() {
+    getCardsPromo();
+    participacaoUnidade();
+    getDiaSemana();
+    partPromocao();
+
+  }
 
   async function getCardsPromo() {
     api.get('/home/cards-promo', {
@@ -111,47 +79,19 @@ function callFunctions(){
       swal.fire({
         type: 'error',
         title: 'Oops...',
-        text: 'Algo deu errado, tente novamente mais tarde!',
+        text: ['Algo deu errado, tente novamente mais tarde!',]
       })
     }
     )
   }
-  
+
   async function participacaoUnidade() {
     api.get('/home/participacao-unidade', {
     }).then(response => {
-      setUnidade(response.data.consulta.unidade);
-      setPromo(response.data.consulta.promo);
-      setForaPromo(response.data.consulta.foraPromo);
-      setUnidade1(response.data.consulta.unidade1);
-      setPromo1(response.data.consulta.promo1);
-      setForaPromo1(response.data.consulta.foraPromo1);
-      setUnidade2(response.data.consulta.unidade2);
-      setPromo2(response.data.consulta.promo2);
-      setForaPromo2(response.data.consulta.foraPromo2);
-      setUnidade3(response.data.consulta.unidade3);
-      setPromo3(response.data.consulta.promo3);
-      setForaPromo3(response.data.consulta.foraPromo3);
-      setUnidade4(response.data.consulta.unidade4);
-      setPromo4(response.data.consulta.promo4);
-      setForaPromo4(response.data.consulta.foraPromo4);
-      setUnidade5(response.data.consulta.unidade5);
-      setPromo5(response.data.consulta.promo5);
-      setForaPromo5(response.data.consulta.foraPromo5);
-      setUnidade6(response.data.consulta.unidade6);
-      setPromo6(response.data.consulta.promo6);
-      setForaPromo6(response.data.consulta.foraPromo6);
-      setUnidade7(response.data.consulta.unidade7);
-      setPromo7(response.data.consulta.promo7);
-      setForaPromo7(response.data.consulta.foraPromo7);
-      setUnidade8(response.data.consulta.unidade8);
-      setPromo8(response.data.consulta.promo8);
-      setForaPromo8(response.data.consulta.foraPromo8);
-      setUnidade9(response.data.consulta.unidade9);
-      setPromo9(response.data.consulta.promo9);
-      setForaPromo9(response.data.consulta.foraPromo9);
-
-
+      setUnidade(response.data.consulta.map(unidade => unidade.unidade));
+      setVendaUnidaPromo(response.data.consulta.map(vendaUnidaPromo => vendaUnidaPromo.vendaPromo));
+      setVendaUnidade(response.data.consulta.map(vendaUnidade => vendaUnidade.venda));
+      setPromo(response.data.consulta.map(promo => promo.promo));
     }
     ).catch(error => {
       swal.fire({
@@ -165,34 +105,51 @@ function callFunctions(){
     )
   }
 
-  
-  async function getDiaSemana(){
+
+
+
+  async function getDiaSemana() {
     api.get('/home/participacao-semana', {
     }).then(response => {
-  
-        setDia(response.data.consulta.dia);
-        setPromoDia(response.data.consulta.promo);
-        setForaPromoDia(response.data.consulta.foraPromo);
-        setDia1(response.data.consulta.dia1);
-        setPromoDia1(response.data.consulta.promo1);
-        setForaPromoDia1(response.data.consulta.foraPromo1);
-        setDia2(response.data.consulta.dia2);
-        setPromoDia2(response.data.consulta.promo2);
-        setForaPromoDia2(response.data.consulta.foraPromo2);
-        setDia3(response.data.consulta.dia3);
-        setPromoDia3(response.data.consulta.promo3);
-        setForaPromoDia3(response.data.consulta.foraPromo3);
-        setDia4(response.data.consulta.dia4);
-        setPromoDia4(response.data.consulta.promo4);
-        setForaPromoDia4(response.data.consulta.foraPromo4);
-        setDia5(response.data.consulta.dia5);
-        setPromoDia5(response.data.consulta.promo5);
-        setForaPromoDia5(response.data.consulta.foraPromo5);
-        setDia6(response.data.consulta.dia6);
-        setPromoDia6(response.data.consulta.promo6);
-        setForaPromoDia6(response.data.consulta.foraPromo6);
 
-    })
+      setDia(response.data.consulta.map(dia => dia.dia));
+      setVendaDiaPromo(response.data.consulta.map(vendaDiaPromo => vendaDiaPromo.vendaPromo));
+      setVendaDiaSemana(response.data.consulta.map(vendaDiaSemana => vendaDiaSemana.venda));
+      setPromoDia(response.data.consulta.map(promo => promo.promo));
+
+    }).catch(error => {
+      swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'Algo deu errado, tente novamente mais tarde!',
+      })
+
+      console.log(error);
+    }
+    )
+  }
+
+  async function partPromocao() {
+    api.get('/home/participacao-promo', {
+    }).then(response => {
+      setDataPart(response.data.consulta.map(data => data.data));
+      setVendaMes(response.data.consulta.map(vendaMes => vendaMes.venda));
+      setVendaMesPromo(response.data.consulta.map(vendaMesPromo => vendaMesPromo.vendaPromo));
+      setPromoMesPart(response.data.consulta.map(promo => promo.partPromo));
+
+      console.log(response.data.consulta[0].vendaPromo);
+    }
+
+    ).catch(error => {
+      swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'Algo deu errado, tente novamente mais tarde!',
+      })
+
+      console.log(error);
+    }
+    )
   }
   if (token === null || token === undefined || token === '') {
     localStorage.clear();
@@ -205,64 +162,96 @@ function callFunctions(){
     history.push('/');
   }
 
-  
+
   const dataUnidades = {
-    labels: [unidade, unidade1, unidade2, unidade3, unidade4, unidade5, unidade6, unidade7, unidade8, unidade9], 
+    labels: unidade,
     datasets: [
       {
-        label: 'Participação durante a promoção',
-        data: [promo, promo1, promo2, promo3, promo4, promo5, promo6, promo7, promo8, promo9],
-        backgroundColor: [
-          'rgba(54, 162, 235, 0.2)',
-        ],
-        borderColor: [
-          'rgba(54, 162, 235, 1)',
-        ],
-        borderWidth: 1
+        label: 'Venda Promoção',
+        data: vendaUnidaPromo,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+
       },
       {
-        label: 'Participação fora da promoção',
-        data: [foraPromo, foraPromo1, foraPromo2, foraPromo3, foraPromo4, foraPromo5, foraPromo6, foraPromo7, foraPromo8, foraPromo9],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-        ],
-        borderWidth: 1
+        label: 'Venda Fora',
+        data: vendaUnidade,
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
 
-      }
+        stack: 'combined'
+      },
+      {
+        label: 'Participação Unidade',
+        data: promo,
+        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+        borderColor: 'rgba(255, 206, 86, 1)',
+        type: 'line',
+        stack: 'combined',
+        tension: 0.2,
+      },
     ]
   };
+
 
   const dataDias = {
-    labels: [dia, dia1, dia2, dia3, dia4, dia5, dia6],
+    labels: dia,
     datasets: [
       {
-        label: 'Participação durante a promoção',
-        data: [promoDia, promoDia1, promoDia2, promoDia3, promoDia4, promoDia5, promoDia6],
-        backgroundColor: [
-          'rgba(54, 162, 235, 0.2)',
-        ],
-        borderColor: [
-          'rgba(54, 162, 235, 1)',
-        ],
-        borderWidth: 1
+        label: 'Venda Promoção',
+        data: vendaDiaPromo,
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        type: 'bar',
+
       },
       {
-        label: 'Participação fora da promoção',
-        data: [foraPromoDia, foraPromoDia1, foraPromoDia2, foraPromoDia3, foraPromoDia4, foraPromoDia5, foraPromoDia6],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-        ],
-        borderWidth: 1
-
+        label: 'Venda Geral',
+        data: vendaDiaSemana,
+        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        stack: 'combined',
+        type: 'bar'
+      },
+      {
+        label: 'Participação Promoção',
+        data: promoDia,
+        borderColor: 'rgba(255, 206, 86, 1)',
+        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+        stack: 'combined'
       }
     ]
   };
+
+
+  const dataParticipacao = {
+    labels: dataPart,
+    datasets: [
+      {
+        label: 'Venda promoção',
+        data: vendaMesPromo,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor:'rgba(54, 162, 235, 1)',
+        
+      },
+      {
+        label: 'Venda fora promoção',
+        data: vendaMes,
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        stack: 'combined'
+      },
+      {
+        label: 'Participação promoção',
+        data: promoMesPart,
+        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+        borderColor:  'rgba(255, 206, 86, 1)',
+        type: 'line',
+        tension: 0.2,
+        stack: 'combined'
+      }
+    ]
+  }
 
   const options1 = {
     indexAxis: 'x',
@@ -280,10 +269,63 @@ function callFunctions(){
         display: true,
         text: 'Vendas na Promoção por Unidade',
       },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            let label = context.dataset.label || '';
+            let index = context.datasetIndex;
+            if (index === 2) {
+              label += ': ' + new Intl.NumberFormat('pt-BR', { style: 'percent', currency: 'BRL' }).format(context.parsed.y);
+            } else if (context.parsed.y !== null) {
+              label += ': ' + new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+            }
+            return label;
+          }
+        }
+      }
     },
+    scales: {
+      y: {
+        stacked: true
+      },
+    }
   };
 
   const options2 = {
+    elements: {
+      bar: {
+        borderWidth: 2,
+      },
+    },
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Venda e Participação por dia da semana'
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            let label = context.dataset.label || '';
+            let index = context.datasetIndex;
+            if (index === 2) {
+              label += ': ' + context.parsed.y + '%';
+            } else if (context.parsed.y !== null) {
+              label += ': ' + new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+            }
+            return label;
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        stacked: true
+      },
+    }
+  };
+
+  const options3 = {
     indexAxis: 'x',
     elements: {
       bar: {
@@ -297,34 +339,97 @@ function callFunctions(){
       },
       title: {
         display: true,
-        text: 'Venda na Promoção por Dia da Semana',
+        text: 'Participação no faturamento identificado',
       },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            let label = context.dataset.label || '';
+            let index = context.datasetIndex;
+            if (index === 2) {
+              label += ': ' + context.parsed.y + '%';
+            } else if (context.parsed.y !== null) {
+              label += ': ' + new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+            }
+            return label;
+          }
+        }
+      }
     },
     scales: {
-      x: {
-        stacked: true,
-      },
       y: {
-        stacked: true
+        stacked: true,
+        ticks: {
+          beginAtZero: true,
+        }
       }
     }
   };
-  
+  let [data, setData] = useState([]);
 
+  const server = {
+    url: 'http://localhost:3003/home/clientes-promo',
+    then: data => data.consulta.map(cli => [cli.nome, cli.ender, cli.bairro, cli.telefone, cli.celular, cli.cupons, cli.valor]),
+  }
 
+  const style = {
+    table: {
+      'table-layout': 'fixed',
+      border: '1px solid #ccc',
+      'border-radius': '255px',
+      'font-size': '15px',
+      'font-family': 'Roboto, sans-serif',
+      'line-height': '20px',
+    },
+    th: {
+      'rowspan': '1',
+      'background-color': '#f5f5f5',
+      'color': '#333',
+      'border-bottom': '1px solid black',
+      'text-align': 'left',
+      'font-size': '15px',
+    },
+    td: {
+      'text-align': 'left',
+      'font-size': '12px',
+      'line-height': '5px',
+    }
+  }
 
+  const language = {
+    search: {
+      placeholder: 'Procure por um registro.',
+    },
+    sort: {
+      sortAsc: 'Ordenar coluna de forma ascendente',
+      sortDesc: 'Ordenar coluna de forma descendente',
+    },
+    pagination: {
+      previous: 'Anterior',
+      next: 'Próximo',
+      navigate: (page, pages) => `Página ${page} de ${pages}`,
+      page: (page) => `Página ${page}`,
+      showing: 'Mostrando',
+      of: 'de',
+      to: 'até',
+      results: 'resultados',
+    },
+    loading: 'Carregando...',
+    noRecordsFound: 'Não foram encontrados dados',
+    error: 'Um erro ocorreu durante a busca de dados',
+  }
   return (
 
     <S.Container>
+
+      <Navbar />
       <S.DateTimePickerContainer>
         <DateTimePicker
-          onChange={(date) => setDataInicial(date)}
-          value={dataInicial}
+          value='2020-10-02'
           format="dd/MM/yyyy"
         />
         <DateTimePicker
-          onChange={(date) => setDataFinal(date)}
-          value={dataFinal}
+          value='2020-10-31'
           format="dd/MM/yyyy"
         />
         <i onClick={callFunctions} class='bx bx-refresh'></i>
@@ -341,7 +446,7 @@ function callFunctions(){
           </div>
           <div className="card">
             <h4>Participação na Promoção</h4>
-            <h5>{venda}</h5>
+            <h5>{vendaPart}</h5>
           </div>
           <div className="card">
             <h4>Ticket Médio Promoção</h4>
@@ -360,8 +465,8 @@ function callFunctions(){
             <h5>{mediaCuponsCliente}</h5>
           </div>
           <div className="card">
-            <h4>Clientes Perdidos</h4>
-            <h5>{clientesPerdidos}</h5>
+            <h4>Venda total Promoção</h4>
+            <h5>{vendaPromoFormatado}</h5>
           </div>
         </S.CardContainer>
         <S.ChartContainer>
@@ -369,14 +474,34 @@ function callFunctions(){
             <Chart type="bar" options={options1} data={dataUnidades} />
           </div>
           <div>
-            <Chart type="bar" options={options2} data={dataDias} />
+            <Chart type="line" options={options2} data={dataDias} />
           </div>
           <div>
-            <Chart type="line" options={options1} data={dataDias} />
+            <Chart type="bar" options={options3} data={dataParticipacao} />
           </div>
         </S.ChartContainer>
+        <S.GridContainer>
+          <Grid server={server}
+            columns={
+              ["Nome",
+                "Endereço",
+                "Bairro",
+                "Telefone",
+                "Celular",
+                "Cupons",
+                {
+                  name: "Valor",
+                  formatter: (cells) => `${(cells).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}`
+                }
+              ]}
+            data={data}
+            sort={true}
+            search={true}
+            language={language}
+            style={style}
+            pagination={true} />
+        </S.GridContainer>
       </S.DataContainer>
-
     </S.Container>
 
   );

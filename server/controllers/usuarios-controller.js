@@ -83,7 +83,11 @@ exports.Login = async (req, res, next) => {
                 });
                 return res.status(200).send({
                     message: 'Autenticado com sucesso',
-                    token: token
+                    token: token, 
+                    user: {
+                        uc_cod: results[0].uc_cod,
+                        uc_login: results[0].uc_login
+                    }
                 });
             } else {
         return res.status(401).send({ message: 'Senha Errada' })

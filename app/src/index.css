@@ -11,7 +11,6 @@ html, body {
   background-image: url(./Assets/Login_Background.png);
   background-repeat: no-repeat;
   background-size: cover;
-  overflow: hidden;
 }
 * {
   margin: 0;

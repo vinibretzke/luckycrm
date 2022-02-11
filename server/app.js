@@ -6,6 +6,10 @@ const morgan = require('morgan');
 const rotaImagens = require('./routes/imagens');
 const rotaUsuarios = require('./routes/usuarios');
 const rotaInitialDashboard = require('./routes/initial-dashboard')
+const rotaCadastroEmpresa = require('./routes/cadastro-empresa')
+const rotaVisoesCRM = require ('./routes/visoes-crm')
+const rotaUtils = require('./routes/utils')
+
 app.use(morgan('dev'));
 app.use('/uploads', express.static('uploads'));
 app.use(express.urlencoded({extended: false}));
@@ -26,7 +30,9 @@ app.use(function(req, res, next) {
 
 app.use('/imagens', rotaImagens);
 app.use('/usuarios', rotaUsuarios);
-app.use('/home', rotaInitialDashboard);
+app.use('/home', rotaInitialDashboard, rotaUtils);
+app.use('/cadastro-empresa', rotaCadastroEmpresa);
+app.use('/visoes-crm', rotaVisoesCRM);
 
 app.use((req, res, next)=> {
     const erro = new Error('Ops, infelizmente ocorreu algum problema ao acessar essa rota');

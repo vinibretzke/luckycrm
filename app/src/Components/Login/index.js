@@ -31,7 +31,8 @@ export default function Login() {
                             uc_password
                         }).then(response => {
                             localStorage.setItem('token', response.data.token);
-                            localStorage.setItem('user', response.data.uc_login);
+                            localStorage.setItem('user', response.data.user.uc_login);
+                            localStorage.setItem('user_id', response.data.user.uc_cod);
                           
                             history.push('/home/dashboard');
                         }).catch(error => {

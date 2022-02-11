@@ -1,21 +1,14 @@
 
-exports.participacaoSemana = `select descr label, coalesce(geral,0) geral, coalesce(promo,0) promo, rgb
+exports.participacaoSemana = `select descr label, venda_promo, venda, coalesce(promo,0) promo
 from (select dia as label,
+			venda_promo ,
+			venda,
              (case
                when (venda_promo > 0) and (venda > 0) then
-                round((venda_promo / (venda)), 4)
+                round((venda_promo / (venda)*100), 0)
                else
                 0
-             end) promo,
-             (case
-               when (venda_promo > 0) and (venda > 0) then
-                round(1 - ((venda_promo / (venda))), 4)
-               when (venda > 0) and (venda_promo = 0) then
-                1
-               else
-                0
-             end) geral,
-             '25' rgb
+             end) promo
         from (select DAYOFWEEK(c.clcp_data_compra) dia,
                      coalesce(sum(c.clcp_val_cupom), 0) venda,
                      coalesce((select sum(c1.clcp_val_cupom)
