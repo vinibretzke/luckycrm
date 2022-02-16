@@ -177,13 +177,10 @@ export default function Empresas() {
     ] 
     return (
         <S.Container>
-            <Navbar />
-            <S.Buttons>
+            <div className="header">
                 <h1>Cadastro de Empresas</h1>
-                <i class="fas fa-plus-circle add"></i>
-                <i class="fas fa-pen edit"></i>
-                <i class="fas fa-minus-circle delete"></i>
-            </S.Buttons>
+            </div>
+            <Navbar />
             <S.FormContainer id="form">
                 <Formik
                     initialValues={{}}

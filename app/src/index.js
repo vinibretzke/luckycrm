@@ -15,8 +15,10 @@ import Filiais from './Components/Cadastros/Filiais/'
 import Setores from './Components/Cadastros/Setores/'
 import Sugestoes from './Components/Cadastros/Sugestoes/'
 import Trofeus from './Components/Cadastros/Trofeus/'
-import Vinhos from './Components/Cadastros/Vinhos/'
 import Pesquisas from './Components/Cadastros/Pesquisas/'
+import Vinhos from './Components/Cadastros/Vinhos/Vinhos'
+import VinhosCateg from './Components/Cadastros/Vinhos/Categoria de Vinhos'
+import VinhosOrig from './Components/Cadastros/Vinhos/Origem do Vinho'
 //Rota Visões CRM
 import VisoesIdade from './Components/Visões CRM/Idade'
 import VisoesGenero from './Components/Visões CRM/Genero'
@@ -39,7 +41,9 @@ function App () {
         <Route exact path='/cadastros/setores' component={Setores}/>
         <Route exact path='/cadastros/sugestoes' component={Sugestoes}/>
         <Route exact path='/cadastros/trofeus' component={Trofeus}/>
-        <Route exact path='/cadastros/vinhos' component={Vinhos}/>    
+        <Route exact path='/cadastros/vinhos' component={Vinhos}/>   
+        <Route exact path='/cadastros/vinhos-categoria' component={VinhosCateg}/> 
+        <Route exact path='/cadastros/vinhos-origem' component={VinhosOrig}/>
         <Route exact path='/cadastros/pesquisas' component={Pesquisas}/>    
         <Route exact path='/visoes/venda-por-idade' component={VisoesIdade}/>
         <Route exact path='/visoes/venda-por-genero' component={VisoesGenero}/>

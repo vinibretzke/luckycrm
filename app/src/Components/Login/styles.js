@@ -22,7 +22,7 @@ export const Login = styled.div `
  input{
     width: 300px;
     height: 30px;
-    border: 2px solid #A1B2CD;
+    border: 2px solid #BEB09C;
     border-radius: 8px;
     font-family: 'Open Sans', sans-serif;
     font-size: 18px;
@@ -53,7 +53,7 @@ button {
 }
 .btn-login {
      color: #FFFFFF;
-     background-color: #3485FF;
+     background-color: #A66741;
      border: 0px;
      
    

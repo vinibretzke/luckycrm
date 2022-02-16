@@ -6,7 +6,10 @@ const morgan = require('morgan');
 const rotaImagens = require('./routes/imagens');
 const rotaUsuarios = require('./routes/usuarios');
 const rotaInitialDashboard = require('./routes/initial-dashboard')
-const rotaCadastroEmpresa = require('./routes/cadastro-empresa')
+const rotaCadastroEmpresa = require('./routes/cadastros/cadastro-empresa');
+const rotaCadastroFilial = require('./routes/cadastros/cadastro-filial');
+const rotaCadastroSetor = require('./routes/cadastros/cadastro-setor');
+const rotaCadastroVinho = require('./routes/cadastros/cadastro-vinhos');
 const rotaVisoesCRM = require ('./routes/visoes-crm')
 const rotaUtils = require('./routes/utils')
 
@@ -32,6 +35,9 @@ app.use('/imagens', rotaImagens);
 app.use('/usuarios', rotaUsuarios);
 app.use('/home', rotaInitialDashboard, rotaUtils);
 app.use('/cadastro-empresa', rotaCadastroEmpresa);
+app.use('/cadastro-filial', rotaCadastroFilial)
+app.use('/cadastro-setor', rotaCadastroSetor)
+app.use('/cadastro-vinhos', rotaCadastroVinho)
 app.use('/visoes-crm', rotaVisoesCRM);
 
 app.use((req, res, next)=> {

@@ -3,7 +3,7 @@ import * as S from './styles'
 import { useHistory } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage} from 'formik'
 import * as yup from 'yup';
-import Logo from '../../Assets/Logo.png'
+import Logo from '../../Assets/Logo2.png'
 import api from '../../api/api'
 import swal from 'sweetalert2'
 

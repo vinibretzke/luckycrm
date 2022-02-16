@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import perfil from '../../Assets/perfil.png';
 import * as S from "./styles";
 import Logo from '../../Assets/Logo2.png';
@@ -16,7 +16,12 @@ export default function Sidebar() {
 
 
 
-    
+
+
+
+
+
+
     return (
         <S.Container>
             <S.Header>
@@ -29,13 +34,13 @@ export default function Sidebar() {
             </S.Header>
             <S.LeftSide className="close">
                 <ul class="nav-links">
-                    <li>
+                    <li  >
                         <Link to="/home/dashboard">
                             <i class="bx bx-grid-alt"></i>
                             <span class="link_name" >Visão Geral</span>
                         </Link>
                     </li>
-                    <li>
+                    <li  >
                         <div class="icon-link">
                             <a href='#'>
                                 <i class='bx bx-collection'></i>
@@ -44,15 +49,19 @@ export default function Sidebar() {
                             <i class='bx bxs-chevron-down'></i>
                         </div>
                         <ul class="sub-menu">
-                            <li><Link to='/cadastros/empresas'>Empresas</Link></li>
-                            <li><Link to='/cadastros/filiais'>Filiais</Link></li>
-                            <li><Link to='/cadastros/setores'>Setores</Link></li>
-                            <li><Link to='/cadastros/vinhos'>Vinhos</Link></li>
-                            <li><Link to='/cadastros/sugestoes'>Motivos de Sugestão</Link></li>
-                            <li><Link to='/cadastros/pesquisas'>Pesquisas</Link></li>
+                            <li  ><Link to='/cadastros/empresas'>Empresas</Link></li>
+                            <li  ><Link to='/cadastros/filiais'>Filiais</Link></li>
+                            <li  ><Link to='/cadastros/setores'>Setores</Link></li>
+                            <ul class="sub-menu-2"  ><b>Adega</b>
+                                <li> <Link to='/cadastros/vinhos'>Vinhos</Link></li>
+                                <li> <Link to='/cadastros/vinhos-categoria'>Categoria de Vinhos</Link></li>
+                                <li> <Link to='/cadastros/vinhos-origem'>Origem do Vinho</Link></li>
+                            </ul>
+                            <li  ><Link to='/cadastros/sugestoes'>Motivos de Sugestão</Link></li>
+                            <li  ><Link to='/cadastros/pesquisas'>Pesquisas</Link></li>
                         </ul>
                     </li>
-                    <li>
+                    <li  >
                         <div class="icon-link">
                             <a href="#">
                                 <i class='bx bxs-pie-chart-alt-2'></i>
@@ -67,7 +76,7 @@ export default function Sidebar() {
                             <li><Link to='/visoes/analise-sugestoes'>Sugestões</Link></li>
                         </ul>
                     </li>
-                    <li>
+                    <li >
                         <div class="icon-link">
                             <a href="#">
                                 <i class='bx bxs-cog'></i>
