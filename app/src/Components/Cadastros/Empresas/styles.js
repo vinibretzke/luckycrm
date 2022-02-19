@@ -75,7 +75,7 @@ export const FormContainer = styled.div`
     justify-content: center;
     align-items: center;
     margin-top: 20px;
-    height: 150px;
+    height: 100px;
     width: 100%;
     border-bottom: 1px solid #000;
     z-index: 1;
@@ -83,7 +83,7 @@ export const FormContainer = styled.div`
 
     form {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
         width: 30%;
         position: absolute;
         left: 0;
@@ -135,7 +135,7 @@ export const GridContainer = styled.div`
     width: 100%;
     z-index: 1;
     position: absolute;
-    top: 200px;
+    top: 170px;
 
     .buttonExcluir {
         background: #FF3434;

@@ -10,6 +10,8 @@ const rotaCadastroEmpresa = require('./routes/cadastros/cadastro-empresa');
 const rotaCadastroFilial = require('./routes/cadastros/cadastro-filial');
 const rotaCadastroSetor = require('./routes/cadastros/cadastro-setor');
 const rotaCadastroVinho = require('./routes/cadastros/cadastro-vinhos');
+const rotaCadastroSugestoes = require('./routes/cadastros/cadastro-sugestoes');
+const rotaCadastroPesquisa = require('./routes/cadastros/cadastro-pesquisas');
 const rotaVisoesCRM = require ('./routes/visoes-crm')
 const rotaUtils = require('./routes/utils')
 
@@ -38,6 +40,8 @@ app.use('/cadastro-empresa', rotaCadastroEmpresa);
 app.use('/cadastro-filial', rotaCadastroFilial)
 app.use('/cadastro-setor', rotaCadastroSetor)
 app.use('/cadastro-vinhos', rotaCadastroVinho)
+app.use('/cadastro-sugestoes', rotaCadastroSugestoes)
+app.use('/cadastro-pesquisas', rotaCadastroPesquisa)
 app.use('/visoes-crm', rotaVisoesCRM);
 
 app.use((req, res, next)=> {

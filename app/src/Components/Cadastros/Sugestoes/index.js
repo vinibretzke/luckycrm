@@ -13,77 +13,155 @@ import * as yup from 'yup';
 import swal from 'sweetalert2'
 
 import { RowSelection } from "gridjs/plugins/selection";
-export default function Empresas() {
+import axios from "axios";
+import { render } from "preact";
+import Sidebar from "../../../Utils/Sidebar";
+
+export default function Setores() {
+
+    const [localCodigoFiltro, setLocalCodigoFiltro] = useState([]);
+    const [localNomeFiltro, setLocalNomeFiltro] = useState([]);
+
+    const [setorCodigo, setSetorCodigo] = useState([]);
+    const [motivoNome, setMotivoNome] = useState([]);
 
 
+    const handleSubmit = async () => {
+                await api.post('/cadastro-sugestoes/cadastrar-sugestao', {
+                    codSetor: setorCodigo,
+                    motivo: motivoNome,
+                }).then(response => {
+                    swal.fire({
+                        title: 'Sucesso',
+                        text: 'Setor cadastrado com sucesso',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    })
+                    window.location.reload();
+                }).catch(error => {
+                    swal.fire({
+                        title: 'Erro',
+                        text: 'Erro ao cadastrar setor, verifique se os campos estão corretos e tente novamente',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                })
+            }
+        
     
-    
 
-    const [nomeEmpresa, setNomeEmpresa] = useState('');
-    const [cnpj, setCnpj] = useState('');
-    const [razaoSocial, setRazaoSocial] = useState('');
-   
-
-    async function handleSubmit() {
-        if (nomeEmpresa === '' || cnpj === '' || razaoSocial === '') {
+    const listaLocais = async () => {
+        await api.get('/cadastro-sugestoes/lista-locais').then(response => {
+            setLocalCodigoFiltro(response.data.locais.map(local => local.codSetor));
+            setLocalNomeFiltro(response.data.locais.map(local => local.nome));
+        }).catch(error => {
             swal.fire({
                 title: 'Erro',
-                text: 'Preencha todos os campos',
+                text: 'Erro ao listar empresas',
                 icon: 'error',
                 confirmButtonText: 'OK'
             })
-        } else {
-            api.post('/cadastro-empresa/cadastrar', {
-                nomeEmpresa,
-                razaoSocial,
-                cnpj
-            }).then(response => {
-                swal.fire({
-                    title: 'Sucesso',
-                    text: 'Empresa cadastrada com sucesso!',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                })
-                window.location.reload();
-            }).catch(error => {
-                swal.fire({
-                    title: 'Oops...',
-                    text: 'Erro ao cadastrar empresa!',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                })
-                console.log(error)
-            });
-        }
+        }).catch(error => {
+            swal.fire({
+                title: 'Erro',
+                text: 'Erro ao listar empresas',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            })
+        })
     }
 
-    let [data, setData] = useState([]);
+    const handleSelectedLocais = () => {
+        let selectBox = document.getElementById("selectEmpresa");
+        setSetorCodigo(selectBox.value);
+    }
 
+
+
+    function deleteItem(id) {
+        swal.fire({
+            title: 'Você tem certeza que deseja excluir o setor?',
+            text: "Você não poderá reverter essa ação!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, quero apagar!',
+            cancelButtonText: 'Não, cancelar!'
+        }).then((result) => {
+            if (result.value) {
+                api.delete('/cadastro-sugestoes/deletar', {
+                    data: {
+                        codMotivo: id
+                    }
+
+                }
+                ).then(response => {
+                    swal.fire(
+                        'Apagado!',
+                        'O registro foi apagado.',
+                        'success'
+                    )
+                    window.location.reload();
+                }).catch(error => {
+                    swal.fire(
+                        'Oops...',
+                        'Erro ao apagar registro!',
+                        'error'
+                    )
+                    console.log(error)
+                });
+            }
+        })
+    }
+
+
+    let [data, setData] = [];
     const server = {
-        url: 'http://localhost:3003/cadastro-empresa/lista-empresas',
-        then: data => data.empresas.map(emp => [emp.codEmpresa, emp.nome, emp.razaoSocial, emp.cnpj]),
+        url: 'http://localhost:3003/cadastro-sugestoes/lista-motivos',
+        then: data => data.empresas.map(loc => [loc.motivoCod, loc.locais, loc.motivo]),
     }
 
+    const columns = [
+        {
+            name: '',
+            width: '4%',
+            formatter: (cell, row) => {
+                return h('button', {
+                    className: 'buttonExcluir',
+                    onClick: () => {
+                        deleteItem(row.cells[0].data)
+                    }
+                }, 'Excluir');
+
+            },
+            sort: false,
+        },
+        {
+            name: 'Empresa - Unidade - Setor',
+            width: '15%',
+        }
+        ,
+        
+        'Motivo'
+    ]
     const style = {
+        container: {
+            
+        },
+        header: {
+            'height': '20px',
+        },
         table: {
-            border: '1px solid #ccc',
             'font-size': '15px',
             'font-family': 'Roboto, sans-serif',
             'line-height': '20px',
             'width': '100%',
         },
-        th: {
-
-            'background-color': '#f5f5f5',
-            'color': '#333',
-            'border-bottom': '1px solid black',
-            'text-align': 'center'
-        },
-        td: {
-            'text-align': 'left'
-        }
+        th:{ 'text-align': 'center', 'font-size':'12px','padding':'0'},
+        td:{ 'font-size':'12px','padding':'5px'},
+   footer: {'font-size':'12px'}
     }
-
     const language = {
         search: {
             placeholder: 'Procure por um registro.',
@@ -107,129 +185,51 @@ export default function Empresas() {
         error: 'Um erro ocorreu durante a busca de dados',
     }
 
-    const validationLogin = yup.object().shape({
-        nomeEmpresa: yup
-            .string()
-            .required("Campo obrigatório."),
-        razaoSocial: yup
-            .string()
-            .required("Campo obrigatório."),
-        cnpj: yup
-            .number()
-            .min(14, "CNPJ inválido.")
-            .max(14, "CNPJ inválido.")
-            .required("Campo obrigatório."),
 
-    })
 
-    function deleteItem(id) {
-        swal.fire({
-            title: 'Você tem certeza que deseja excluir a empresa?',
-            text: "Você não poderá reverter essa ação!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sim, quero apagar!',
-            cancelButtonText: 'Não, cancelar!'
-        }).then((result) => {
-            if (result.value) {
-                api.delete('/cadastro-empresa/deletar', {
-                    data: {
-                        codEmpresa: id
-                    }
-                    
-            }
-            ).then(response => {
-                swal.fire(
-                    'Apagado!',
-                    'O registro foi apagado.',
-                    'success'
-                )
-                window.location.reload();
-            }).catch(error => {
-                swal.fire(
-                    'Oops...',
-                    'Erro ao apagar registro!',
-                    'error'
-                )
-                console.log(error)
-            });
-        }  
-        })
-    }
-        const columns = [
-            { 
-                name: '',
-                width: '6%',
-                formatter: (cell, row) => {
-                  return h('button', {
-                    className: 'buttonExcluir',
-                    onClick: () => {deleteItem(row.cells[0].data)}
-                  }, 'Excluir');
-                  
-                },
-                sort: false,                
-              },            
-        'Nome da Empresa',
-        'Razão Social',
-        'CNPJ',
-    ] 
     return (
         <S.Container>
-            <Navbar />
-            <S.Buttons>
-                <h1>Cadastro de Empresas</h1>
-                <i class="fas fa-plus-circle add"></i>
-                <i class="fas fa-pen edit"></i>
-                <i class="fas fa-minus-circle delete"></i>
-            </S.Buttons>
-            <S.FormContainer id="form">
+            <Sidebar />
+            <div className="header">
+                <h1>Cadastro de Sugestões</h1>
+            </div>
+            <S.FormContainer>
                 <Formik
-                    initialValues={{}}
-                    onSubmit={handleSubmit}
-                    validationSchema={validationLogin}>
+                    validateOnMount
+                    initialValues={{}}>
                     <Form>
-                        <Field
-                            name="nomeEmpresa"
-                            className="input-field"
-                            placeholder="Nome da Empresa"
-                            onChange={(e) => setNomeEmpresa(e.target.value)}
-                            value={nomeEmpresa}
-                        />
-                        <Field
-                            name="razaoSocial"
-                            className="input-field"
-                            placeholder="Razão Social"
-                            onChange={(e) => setRazaoSocial(e.target.value)}
-                            value={razaoSocial}
-                        />
-                        <Field
-                            name="cnpj"
-                            id="cnpj"
-                            className="input-field"
-                            placeholder="CNPJ"
-                            onChange={(e) => setCnpj(e.target.value)}
-                            value={cnpj}
-                            type="number"
+                        <S.ContainerSelect>
+                            <select id="selectEmpresa" onClick={listaLocais} onChange={handleSelectedLocais}>
+                                <option value="">Empresa - Unidade - Setor</option>
+                                {localCodigoFiltro.map((item, index) => {
+                                    return (
+                                        <option value={item}>{localNomeFiltro[index]}</option>
+                                    )
 
-                        />
-                        <button className="cadastrar" type="submit" onClick={handleSubmit}>Cadastrar</button>
+                                })}
+
+                            </select>
+                        </S.ContainerSelect>
+                        <Field name="localSugestao" className="input-field" placeholder="Descrição da Sugestão" onChange={(e) => setMotivoNome(e.target.value)} />
+                        <button className="button" type="submit" onClick={handleSubmit}>Cadastrar</button>
+
                     </Form>
                 </Formik>
-
             </S.FormContainer>
             <S.GridContainer>
-            <Grid server={server}
+                <Grid
+                    server={server}
                     columns={columns}
+                    style={style}
+                    language={language}
                     data={data}
                     sort={true}
                     search={true}
-                    language={language}
-                    style={style}
-                    pagination={true}                     
-                    />
+                    pagination={true}
+                    width = "55%"
+                />
             </S.GridContainer>
         </S.Container>
+
     )
 }

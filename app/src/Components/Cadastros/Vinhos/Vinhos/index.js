@@ -189,8 +189,15 @@ export default function Setores() {
           name: 'Preço',
           formatter: (cells) => `${(cells).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}`  
         },
-        'Temperatura Minima',
-        'Temperatura Maxima'
+        {
+            name: 'Temperatura Minima',
+            formatter: (cells) => `${cells}°C`
+        },
+        {
+            name: 'Temperatura Maxima',
+            formatter: (cells) => `${cells}°C`
+
+        }
     ]
     const style = {
         table: {

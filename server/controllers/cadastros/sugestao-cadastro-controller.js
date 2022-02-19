@@ -3,27 +3,50 @@ const mysql = require('../../mysql');
 
 
 
-exports.getEmpresas = async (req, res, next) => {
+
+exports.listaUnidEmprSetor = async (req, res, next) => {
     try {
-        const result = await mysql.execute('SELECT empr_cod, empr_nome, empr_razao_social, empr_cnpj  FROM empresa');
+        const result = await mysql.execute(`select st.setr_codigo, CONCAT(st.empr_codigo, ' - ', st.unid_codigo, ' - ', st.setr_nome) as setores  from setor_totem st where st.setr_flg_sugestao = "S"`);
         const response = {
             quantidade: result.length,
-            empresas: result.map(emp => {
+            locais: result.map(set => {
                 return {
-                    codEmpresa: emp.empr_cod,
-                    nome: emp.empr_nome,
-                    razaoSocial: emp.empr_razao_social,
-                    cnpj: emp.empr_cnpj,
-                    request: {
-                        tipo: 'GET',
-                        descricao: 'Retorna todas as empresas',
-                        url: process.env.URL_API + 'empresas/' + emp.empr_cod
-                    }
+                    codSetor: set.setr_codigo,
+                    nome: set.setores
                 }
-               
             })
-            
-        } 
+        }
+        return res.status(200).send(response);
+    } catch (error) {
+        return res.status(500).send({ error: error });
+    }
+};
+exports.getMotivoSugestao = async (req, res, next) => {
+    try {
+        const result = await mysql.execute(`select
+                                                m.motv_cod,
+                                                CONCAT(e.empr_cod, ' - ', u.unid_cod, ' - ', st.setr_nome) as locais,
+                                                m.motv_desc
+                                            from
+                                                motivos m
+                                            inner join setor_totem st on
+                                                m.setr_cod = st.setr_codigo
+                                            inner join unidade u on
+                                                st.unid_codigo = u.unid_cod
+                                            inner join empresa e on
+                                                u.empr_cod = u.empr_cod`);
+        const response = {
+            quantidade: result.length,
+            empresas: result.map(loc => {
+                return {
+                    motivoCod: loc.motv_cod,
+                    locais: loc.locais, 
+                    motivo: loc.motv_desc
+                }
+
+            })
+
+        }
         console.log(response);
         return res.status(200).send(response)
     } catch (error) {
@@ -31,13 +54,12 @@ exports.getEmpresas = async (req, res, next) => {
     }
 };
 
-exports.postEmpresa = async (req, res, next) => {
+exports.postMotivo = async (req, res, next) => {
     try {
-        const query = 'INSERT INTO empresa (empr_nome, empr_razao_social, empr_cnpj) values (?, ?, ?)';
+        const query = 'insert into motivos (setr_cod, motv_desc) values (?, ?);';
         const result = await mysql.execute(query, [
-            req.body.nomeEmpresa,
-            req.body.razaoSocial,
-            req.body.cnpj
+            req.body.codSetor,
+            req.body.motivo
         ]);
         const response = {
             mensagem: 'Cadastro inserido com sucesso',
@@ -49,22 +71,22 @@ exports.postEmpresa = async (req, res, next) => {
             }
         }
         return res.status(201).send(response);
-        
+
     } catch (error) {
         console.log(error);
         return res.status(500).send({ error: error });
     }
 }
 
-exports.deleteEmpresa = async(req, res, next) => {
+exports.deleteMotivo = async (req, res, next) => {
     try {
-        const query = 'DELETE FROM empresa where empr_cod = ?';
+        const query = 'delete from motivos where motv_cod = ?';
         await mysql.execute(query, [
-            req.body.codEmpresa
+            req.body.codMotivo
         ])
         const response = {
             mensagem: 'Cadastro removido com sucesso',
-            }
+        }
         return res.status(202).send(response);
     } catch (error) {
         return res.status(500).send({ error: error })

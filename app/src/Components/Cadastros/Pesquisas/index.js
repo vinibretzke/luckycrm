@@ -11,18 +11,39 @@ import MaskedInput from "../../../Utils/MaskedInput";
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as yup from 'yup';
 import swal from 'sweetalert2'
+import moment from 'moment'
+import Draggable from 'react-draggable';
 
 import { RowSelection } from "gridjs/plugins/selection";
-export default function Empresas() {
+import axios from "axios";
+import { render } from "preact";
+import Sidebar from "../../../Utils/Sidebar";
 
-
-    
-    
+export default function Setores() {
 
     const [nomeEmpresa, setNomeEmpresa] = useState('');
     const [cnpj, setCnpj] = useState('');
     const [razaoSocial, setRazaoSocial] = useState('');
-   
+
+    const [codPesquisa, setCodPesquisa] = useState('');
+    const [nomePesquisa, setNomePesquisa] = useState('');
+    const [pergunta1, setPergunta1] = useState('');
+    const [tipoPergunta1, setTipoPergunta1] = useState('');
+    const [pergunta2, setPergunta2] = useState('');
+    const [tipoPergunta2, setTipoPergunta2] = useState('');
+    const [pergunta3, setPergunta3] = useState('');
+    const [tipoPergunta3, setTipoPergunta3] = useState('');
+    const [pergunta4, setPergunta4] = useState('');
+    const [tipoPergunta4, setTipoPergunta4] = useState('');
+    const [pergunta5, setPergunta5] = useState('');
+    const [tipoPergunta5, setTipoPergunta5] = useState('');
+    const [pergunta6, setPergunta6] = useState('');
+    const [tipoPergunta6, setTipoPergunta6] = useState('');
+    const [pergunta7, setPergunta7] = useState('');
+    const [tipoPergunta7, setTipoPergunta7] = useState('');
+
+
+
 
     async function handleSubmit() {
         if (nomeEmpresa === '' || cnpj === '' || razaoSocial === '') {
@@ -57,11 +78,42 @@ export default function Empresas() {
         }
     }
 
+    // const listaPerguntas = async () => {
+    //     const pesqCod = codPesquisa;
+    //     api.post('/cadastro-pesquisas/lista-perguntas', {
+    //             codPesquisa: pesqCod
+    //     }).then(response => {
+    //         setPergunta1(response.data.perguntas[0]);
+
+    //         console.log(pergunta1)
+
+
+    //     }).catch(error => {
+    //         console.log(error)
+    //     })
+    // }
+
+
+
+    async function handleSubmitPergunta() {
+
+        alert(pergunta1 + ' ' + tipoPergunta1);
+    }
+
+    const [inputList, setInputList] = useState([]);
+
+    const onAddBtnClick = event => {
+
+    };
+
+
     let [data, setData] = useState([]);
 
     const server = {
-        url: 'http://localhost:3003/cadastro-empresa/lista-empresas',
-        then: data => data.empresas.map(emp => [emp.codEmpresa, emp.nome, emp.razaoSocial, emp.cnpj]),
+        url: 'http://localhost:3003/cadastro-pesquisas/lista-pesquisas',
+        then: data => data.pesquisas.map(pesq => [pesq.codigoPesquisa, pesq.nomePesquisa, pesq.dataInicial, pesq.dataFinal]),
+
+
     }
 
     const style = {
@@ -72,16 +124,9 @@ export default function Empresas() {
             'line-height': '20px',
             'width': '100%',
         },
-        th: {
-
-            'background-color': '#f5f5f5',
-            'color': '#333',
-            'border-bottom': '1px solid black',
-            'text-align': 'center'
-        },
-        td: {
-            'text-align': 'left'
-        }
+        th: { 'text-align': 'center', 'font-size': '12px', 'padding': '0' },
+        td: { 'font-size': '12px', 'padding': '5px' },
+        footer: { 'font-size': '12px' }
     }
 
     const language = {
@@ -138,98 +183,211 @@ export default function Empresas() {
                     data: {
                         codEmpresa: id
                     }
-                    
+
+                }
+                ).then(response => {
+                    swal.fire(
+                        'Apagado!',
+                        'O registro foi apagado.',
+                        'success'
+                    )
+                    window.location.reload();
+                }).catch(error => {
+                    swal.fire(
+                        'Oops...',
+                        'Erro ao apagar registro!',
+                        'error'
+                    )
+                    console.log(error)
+                });
             }
-            ).then(response => {
-                swal.fire(
-                    'Apagado!',
-                    'O registro foi apagado.',
-                    'success'
-                )
-                window.location.reload();
-            }).catch(error => {
-                swal.fire(
-                    'Oops...',
-                    'Erro ao apagar registro!',
-                    'error'
-                )
-                console.log(error)
-            });
-        }  
         })
     }
-        const columns = [
-            { 
-                name: '',
-                width: '6%',
-                formatter: (cell, row) => {
-                  return h('button', {
+
+
+    async function showComponent(pesqCod, pesqNome) {
+        setCodPesquisa(pesqCod);
+        setNomePesquisa(pesqNome);
+        document.getElementById('dragable').style.display = "flex";
+    }
+
+    function hideComponent() {
+        document.getElementById('dragable').style.display = "none";
+        // swal.fire({
+        //     title: 'Você tem certeza que deseja cancelar?',
+        //     text: "A pergunta não será salva!",
+        //     icon: 'warning',
+        //     showCancelButton: true,
+        //     confirmButtonColor: '#3085d6',
+        //     cancelButtonColor: '#d33',
+        //     confirmButtonText: 'Sim, quero cancelar!',
+        //     cancelButtonText: 'Não, cancelar!'
+        // }).then((result) => {
+        //     if (result.value) {
+        //         document.getElementById('dragable').style.display = "none";
+        //     }
+        // }).catch(error => {
+        //     console.log(error)
+        // }
+        // )
+    }
+
+    function cadastrarPergunta(id) {
+        alert(id)
+    }
+    const columns = [
+        {
+            name: '',
+            width: '6%',
+            formatter: (cell, row) => {
+                return h('button', {
                     className: 'buttonExcluir',
-                    onClick: () => {deleteItem(row.cells[0].data)}
-                  }, 'Excluir');
-                  
-                },
-                sort: false,                
-              },            
-        'Nome da Empresa',
-        'Razão Social',
-        'CNPJ',
-    ] 
+                    onClick: () => { deleteItem(row.cells[0].data) }
+                }, 'Excluir');
+            },
+            sort: false,
+        },
+        {
+            name: 'Nome da Pesquisa',
+        },
+        {
+            name: 'Data Inicial',
+            formatter: (cell) => moment(cell).format('DD/MM/YYYY'),
+
+        },
+        {
+            name: 'Data Final',
+            formatter: (cell) => moment(cell).format('DD/MM/YYYY'),
+        },
+        {
+            name: '',
+            formatter: (cell, row) => {
+                return h('button', {
+                    className: 'buttonCadastrarPergunta',
+                    onClick: async () => {
+                        showComponent(row.cells[0].data, row.cells[1].data);
+                    }
+                }, 'Cadastrar Pergunta')
+            },
+            width: '9%',
+            sort: false,
+        }
+
+    ]
     return (
         <S.Container>
-            <Navbar />
-            <S.Buttons>
-                <h1>Cadastro de Empresas</h1>
-                <i class="fas fa-plus-circle add"></i>
-                <i class="fas fa-pen edit"></i>
-                <i class="fas fa-minus-circle delete"></i>
-            </S.Buttons>
-            <S.FormContainer id="form">
+            <Sidebar />
+            <div className="header">
+                <h1>Cadastro de Sugestões</h1>
+            </div>
+            <S.FormContainer>
                 <Formik
-                    initialValues={{}}
-                    onSubmit={handleSubmit}
-                    validationSchema={validationLogin}>
+                    validateOnMount
+                    initialValues={{}}>
                     <Form>
-                        <Field
-                            name="nomeEmpresa"
-                            className="input-field"
-                            placeholder="Nome da Empresa"
-                            onChange={(e) => setNomeEmpresa(e.target.value)}
-                            value={nomeEmpresa}
-                        />
-                        <Field
-                            name="razaoSocial"
-                            className="input-field"
-                            placeholder="Razão Social"
-                            onChange={(e) => setRazaoSocial(e.target.value)}
-                            value={razaoSocial}
-                        />
-                        <Field
-                            name="cnpj"
-                            id="cnpj"
-                            className="input-field"
-                            placeholder="CNPJ"
-                            onChange={(e) => setCnpj(e.target.value)}
-                            value={cnpj}
-                            type="number"
+                        <S.ContainerSelect>
+                            {/* <select id="selectEmpresa">
+                                <option value="">Empresa - Unidade - Setor</option>
+                                {localCodigoFiltro.map((item, index) => {
+                                    return (
+                                        <option value={item}>{localNomeFiltro[index]}</option>
+                                    )
 
-                        />
-                        <button className="cadastrar" type="submit" onClick={handleSubmit}>Cadastrar</button>
+                                })}
+
+                            </select> */}
+                        </S.ContainerSelect>
+                        <Field name="localSugestao" className="input-field" placeholder="Descrição da Sugestão" onChange={(e) => setNomeEmpresa(e.target.value)} />
+                        <button className="button" type="submit" onClick={handleSubmit}>Cadastrar</button>
+
                     </Form>
                 </Formik>
-
             </S.FormContainer>
             <S.GridContainer>
-            <Grid server={server}
+                <Grid
+                    server={server}
                     columns={columns}
+                    style={style}
+                    language={language}
                     data={data}
                     sort={true}
                     search={true}
-                    language={language}
-                    style={style}
-                    pagination={true}                     
-                    />
+                    pagination={true}
+                    width='60%'
+                    resizable={true}
+                />
             </S.GridContainer>
+            <S.FormContainerPerguntas id="dragable">
+
+                <i className="fas fa-times" onClick={hideComponent}></i>
+                <h1>Cadastro de Perguntas - {nomePesquisa}</h1>
+                <Formik
+                    validateOnMount
+                    initialValues={{}}>
+                    <Form>
+
+                        <Field name="pergunta" className="input-field" placeholder="Pergunta 1" onChange={(e) => setPergunta1(e.target.value)} />
+                        <select id="selectTipoPergunta" onChange={(e) => setTipoPergunta1(e.target.value)}>
+                            <option value="">Tipo de Pergunta</option>
+                            <option value="U">Multipla Escolha</option>
+                            <option value="V">Multiplas Escolhas</option>
+                            <option value="N">Nota</option>
+                            <option value="M">Sim ou Não</option>
+                        </select>
+                        <Field name="pergunta" className="input-field" placeholder="Pergunta 2" onChange={(e) => setPergunta2(e.target.value)} />
+                        <select id="selectTipoPergunta" onChange={(e) => setTipoPergunta2(e.target.value)}>
+                            <option value="">Tipo de Pergunta</option>
+                            <option value="U">Multipla Escolha</option>
+                            <option value="V">Multiplas Escolhas</option>
+                            <option value="N">Nota</option>
+                            <option value="M">Sim ou Não</option>
+                        </select>
+                        <Field name="pergunta" className="input-field" placeholder="Pergunta 3" onChange={(e) => setPergunta3(e.target.value)} />
+                        <select id="selectTipoPergunta" onChange={(e) => setTipoPergunta3(e.target.value)}>
+                            <option value="">Tipo de Pergunta</option>
+                            <option value="U">Multipla Escolha</option>
+                            <option value="V">Multiplas Escolhas</option>
+                            <option value="N">Nota</option>
+                            <option value="M">Sim ou Não</option>
+                        </select>
+                        <Field name="pergunta" className="input-field" placeholder="Pergunta 4" onChange={(e) => setPergunta4(e.target.value)} />
+                        <select id="selectTipoPergunta" onChange={(e) => setTipoPergunta4(e.target.value)}>
+                            <option value="">Tipo de Pergunta</option>
+                            <option value="U">Multipla Escolha</option>
+                            <option value="V">Multiplas Escolhas</option>
+                            <option value="N">Nota</option>
+                            <option value="M">Sim ou Não</option>
+                        </select>
+                        <Field name="pergunta" className="input-field" placeholder="Pergunta 5" onChange={(e) => setPergunta5(e.target.value)} />
+                        <select id="selectTipoPergunta" onChange={(e) => setTipoPergunta5(e.target.value)}>
+                            <option value="">Tipo de Pergunta</option>
+                            <option value="U">Multipla Escolha</option>
+                            <option value="V">Multiplas Escolhas</option>
+                            <option value="N">Nota</option>
+                            <option value="M">Sim ou Não</option>
+                        </select>
+                        <Field name="pergunta" className="input-field" placeholder="Pergunta 6" onChange={(e) => setPergunta6(e.target.value)} />
+                        <select id="selectTipoPergunta" onChange={(e) => setTipoPergunta6(e.target.value)}>
+                            <option value="">Tipo de Pergunta</option>
+                            <option value="U">Multipla Escolha</option>
+                            <option value="V">Multiplas Escolhas</option>
+                            <option value="N">Nota</option>
+                            <option value="M">Sim ou Não</option>
+                        </select>
+                        <Field name="pergunta" className="input-field" placeholder="Pergunta 7" onChange={(e) => setPergunta7(e.target.value)} />
+                        <select id="selectTipoPergunta" onChange={(e) => setTipoPergunta7(e.target.value)}>
+                            <option value="">Tipo de Pergunta</option>
+                            <option value="U">Multipla Escolha</option>
+                            <option value="V">Multiplas Escolhas</option>
+                            <option value="N">Nota</option>
+                            <option value="M">Sim ou Não</option>
+                        </select>
+                        <button className="button" type="submit" onClick={handleSubmitPergunta}>Salvar</button>
+
+                    </Form>
+                </Formik>
+            </S.FormContainerPerguntas>
         </S.Container>
+
     )
 }

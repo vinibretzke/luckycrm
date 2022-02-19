@@ -34,6 +34,7 @@ const upload = multer({
     }, 
     fileFilter: fileFilter
 })
+
 router.get('/', login.obrigatorio, imagensController.getImagens) 
 router.get('/:cod_imagens', login.obrigatorio, imagensController.getUmaImagem);
 router.post('/', login.obrigatorio, upload.single('imagem'), imagensController.postImagens);
